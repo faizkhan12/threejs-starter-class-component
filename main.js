@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import FragmentShader from "./shaders/fragment.glsl";
+import VertexShader from "./shaders/vertex.glsl";
 
 export default class ThreeD {
   constructor() {
@@ -25,18 +27,22 @@ export default class ThreeD {
 
   addMesh() {
     this.geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    this.material = new THREE.MeshNormalMaterial();
+    this.material = new THREE.ShaderMaterial({
+      vertexShader: VertexShader,
+      fragmentShader: FragmentShader,
+      side: THREE.DoubleSide,
+    });
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
   }
   render() {
     this.time++;
-    this.mesh.rotation.x = this.time / 2000;
-    this.mesh.rotation.y = this.time / 1000;
+    this.mesh.rotation.x += 0.01;
+    this.mesh.rotation.y += 0.01;
 
     this.renderer.render(this.scene, this.camera);
-    window.requestAnimationFrame(this.render.bind(this.time));
+    window.requestAnimationFrame(this.render.bind(this));
   }
 
   resize() {
